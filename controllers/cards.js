@@ -4,7 +4,7 @@ const getAllCards = async (req, res) => {
   try {
     const cards = await Card.find({});
     if (!cards) {
-      return res.status(404).json({ message: 'Cards not found' })
+      return res.status(404).json({ message: 'Cards not found' });
     }
     return res.status(200).json(cards);
   } catch (err) {
@@ -50,7 +50,7 @@ const likeCard = async (req, res) => {
     if (!card) {
       return res.status(404).json({ message: 'Cards not found' })
     }
-    return res.status(201).json(card);
+    return res.status(200).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if (err.name = 'ValidationError') {
@@ -76,7 +76,7 @@ const dislikeCard = async (req, res) => {
     if (!card) {
       return res.status(404).json({ message: 'Card not found' })
     }
-    return res.status(201).json(card);
+    return res.status(200).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if (err.name = 'ValidationError') {
