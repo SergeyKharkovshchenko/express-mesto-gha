@@ -22,8 +22,7 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const { user: { _id } } = req;
-  const user = await User.findById(_id);
+  const user = await User.findById(req.params.userId);
   try {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -72,7 +71,7 @@ const updateProfile = async (req, res) => {
       { new: true },
     );
     if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'User not found' });
     }
     return res.status(201).json(user);
   } catch (err) {
