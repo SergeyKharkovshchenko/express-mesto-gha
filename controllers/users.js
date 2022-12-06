@@ -102,7 +102,8 @@ const updateAvatar = async (req, res) => {
     if (!body.avatar) {
       return res.status(404).json({ message: 'User avatar not found' });
     }
-    return res.status(200).json(user);
+    // return res.status(200).json(user);
+    return res.status(200).send(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
