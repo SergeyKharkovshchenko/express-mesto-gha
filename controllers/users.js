@@ -30,15 +30,16 @@ const getUserById = async (req, res) => {
     return res.status(200).json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
-    const errors = Object.values(err.errors).map((err) => err.message);
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
+      const errors = Object.values(err.errors).map((err) => err.message);
       // eslint-disable-next-line no-shadow
       return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
 
     // eslint-disable-next-line no-undef
+    const errors = Object.values(err.errors).map((err) => err.message);
     return res.status(500).json({ message: errors.join(', ') });// 'Произошла ошибка' })
   }
 };
