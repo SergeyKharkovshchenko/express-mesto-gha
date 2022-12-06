@@ -25,7 +25,7 @@ const getUserById = async (req, res) => {
   const user = await User.findById(req.params.userId);
   try {
     if (!user) {
-      return res.status(400).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' });
     }
     return res.status(200).json(user);
   } catch (err) {
@@ -36,7 +36,7 @@ const getUserById = async (req, res) => {
       // eslint-disable-next-line no-shadow
       const errors = Object.values(err.errors).map((err) => err.message);
       // eslint-disable-next-line no-shadow
-      return res.status(404).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
     // eslint-disable-next-line no-undef, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
