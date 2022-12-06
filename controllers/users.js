@@ -35,7 +35,7 @@ const getUserById = async (req, res) => {
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       const errors = Object.values(err.errors).map((err) => err.message);
       // eslint-disable-next-line no-shadow
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(404).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
 
     // eslint-disable-next-line no-undef
