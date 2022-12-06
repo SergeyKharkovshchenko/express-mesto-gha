@@ -33,7 +33,7 @@ const getUserById = async (req, res) => {
     const errors = Object.values(err.errors).map((err) => err.message);
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
+    if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       // eslint-disable-next-line no-shadow
       return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
@@ -100,7 +100,7 @@ const updateAvatar = async (req, res) => {
     if (!user.avatar) {
       return res.status(404).json({ message: 'User avatar not found' });
     }
-    return res.status(201).json(user);
+    return res.status(200).json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
