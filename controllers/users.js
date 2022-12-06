@@ -24,21 +24,21 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   const user = await User.findById(req.params.userId);
   try {
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
+    // if (!user) {
+    //   return res.status(404).json({ message: 'User not found' });
+    // }
     return res.status(200).json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
+      // eslint-disable-next-line no-shadow
       const errors = Object.values(err.errors).map((err) => err.message);
       // eslint-disable-next-line no-shadow
       return res.status(404).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
-
-    // eslint-disable-next-line no-undef
+    // eslint-disable-next-line no-undef, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
     return res.status(500).json({ message: errors.join(', ') });// 'Произошла ошибка' })
   }
@@ -102,8 +102,7 @@ const updateAvatar = async (req, res) => {
     if (!body.avatar) {
       return res.status(404).json({ message: 'User avatar not found' });
     }
-    // return res.status(200).json(user);
-    return res.status(200).send(user);
+    return res.status(200).json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
