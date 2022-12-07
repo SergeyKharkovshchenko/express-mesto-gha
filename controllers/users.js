@@ -33,9 +33,7 @@ const getUserById = async (req, res) => {
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
-      // const errors = Object.values(err.errors).map((err) => err.message);
-      // return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
-      return res.status(400).json({ message: 'Mistake' });
+      return res.status(400).json({ message: err.message });
     }
     // eslint-disable-next-line no-undef, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);

@@ -8,11 +8,12 @@ const getAllCards = async (req, res) => {
     }
     return res.status(200).json(cards);
   } catch (err) {
+    // eslint-disable-next-line no-shadow
+    const errors = Object.values(err.errors).map((err) => err.message);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if (err.name = 'ValidationError') {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
       return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
 
@@ -24,13 +25,17 @@ const getAllCards = async (req, res) => {
 const createCard = async (req, res) => {
   try {
     const card = await Card.create(req.body);
-    return res.status(201).json(card);
+    if (!card) {
+      return res.status(404).json({ message: 'Card couldnt be created' });
+    }
+    return res.status(200).json(card);
   } catch (err) {
-    // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
+    // eslint-disable-next-line no-constant-condition, no-cond-assign, no-shadow
+    const errors = Object.values(err.errors).map((err) => err.message);
+    // eslint-disable-next-line no-cond-assign
+    if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
       return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
 
@@ -48,18 +53,17 @@ const likeCard = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(404).json({ message: 'Cards not found' })
+      return res.status(404).json({ message: 'Card not found' })
     }
     return res.status(200).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
+    if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: err.message });
     }
-
+    const errors = Object.values(err.errors).map((err) => err.message);
     // eslint-disable-next-line no-undef
     return res.status(500).json({ message: errors.join(', ') });// 'Произошла ошибка' })
   }
@@ -79,13 +83,13 @@ const dislikeCard = async (req, res) => {
     return res.status(200).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
+    if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: err.message });
     }
-
+    // eslint-disable-next-line no-shadow
+    const errors = Object.values(err.errors).map((err) => err.message);
     // eslint-disable-next-line no-undef
     return res.status(500).json({ message: errors.join(', ') });// 'Произошла ошибка' })
   }
@@ -100,13 +104,13 @@ const deletCardById = async (req, res) => {
     return res.status(201).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
+    if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: err.message });
     }
-
+    // eslint-disable-next-line no-shadow
+    const errors = Object.values(err.errors).map((err) => err.message);
     // eslint-disable-next-line no-undef
     return res.status(500).json({ message: errors.join(', ') });// 'Произошла ошибка' })
   }
