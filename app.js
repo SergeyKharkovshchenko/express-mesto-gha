@@ -19,8 +19,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
-app.use('*', (req, res) => res.status(404).json({ message: 'Неизвестная науке ошибка' }));
-
+app.use('*', (req, res, next) => {
+  res.status(404).json({ message: 'Неизвестная науке ошибка' });
+  next();
+});
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
 }, () => {
