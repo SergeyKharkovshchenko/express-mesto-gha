@@ -23,7 +23,7 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId, { runValidators: true });
+    const user = await User.findById(req.params.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -35,7 +35,7 @@ const getUserById = async (req, res) => {
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
       // const errors = Object.values(err.errors).map((err) => err.message);
       // return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
-      return res.status(400).json({ message: err.message });
+      return res.status(400).json({ message: 'Mistake' });
     }
     // eslint-disable-next-line no-undef, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
