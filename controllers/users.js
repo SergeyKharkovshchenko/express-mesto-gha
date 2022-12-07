@@ -12,9 +12,8 @@ const getAllUsers = async (req, res) => {
     if (err.name = 'ValidationError') {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      // const errors = Object.values(err.errors).map((err) => err.message);
-      // return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
-      return res.status(400).json({ message: 'Users not found' });
+      const errors = Object.values(err.errors).map((err) => err.message);
+      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
     }
 
     // eslint-disable-next-line no-undef
@@ -34,10 +33,9 @@ const getUserById = async (req, res) => {
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
-      // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      // eslint-disable-next-line no-shadow
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      // const errors = Object.values(err.errors).map((err) => err.message);
+      // return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: err.message });
     }
     // eslint-disable-next-line no-undef, no-shadow
     const errors = Object.values(err.errors).map((err) => err.message);
