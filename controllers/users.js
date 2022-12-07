@@ -12,8 +12,9 @@ const getAllUsers = async (req, res) => {
     if (err.name = 'ValidationError') {
       console.error(err);
       // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      // const errors = Object.values(err.errors).map((err) => err.message);
+      // return res.status(400).json({ message: errors.join(', ') });// 'Произошла ошибка' })
+      return res.status(400).json({ message: 'Users not found' });
     }
 
     // eslint-disable-next-line no-undef
@@ -22,8 +23,8 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const user = await User.findById(req.params.userId);
   try {
+    const user = await User.findById(req.params.userId, { runValidators: true });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -69,7 +70,7 @@ const updateProfile = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       _id,
       body,
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -94,10 +95,13 @@ const updateProfile = async (req, res) => {
 const updateAvatar = async (req, res) => {
   try {
     const { user: { _id }, body } = req;
+    if (!body.avatar) {
+      return res.status(400).send({ message: 'Поле "avatar" должно быть заполнено' });
+    }
     const user = await User.findByIdAndUpdate(
       _id,
       body,
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!body.avatar) {
       return res.status(404).json({ message: 'User avatar not found' });

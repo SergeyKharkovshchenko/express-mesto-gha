@@ -45,7 +45,7 @@ const likeCard = async (req, res) => {
       req.params.cardId,
       // eslint-disable-next-line no-underscore-dangle
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!card) {
       return res.status(404).json({ message: 'Cards not found' })
@@ -71,7 +71,7 @@ const dislikeCard = async (req, res) => {
       req.params.cardId,
       // eslint-disable-next-line no-underscore-dangle
       { $pull: { likes: req.user._id } }, // убрать _id из массива
-      { new: true },
+      { new: true, runValidators: true },
     );
     if (!card) {
       return res.status(404).json({ message: 'Card not found' })
