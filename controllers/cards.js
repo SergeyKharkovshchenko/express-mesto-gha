@@ -23,8 +23,10 @@ const getAllCards = async (req, res) => {
 };
 
 const createCard = async (req, res) => {
+  const { name, link } = req.body;
   try {
-    const card = await Card.create(req.body);
+    // eslint-disable-next-line no-underscore-dangle
+    const card = await Card.create({ name, link, owner: req.user._id });
     if (!card) {
       return res.status(404).json({ message: 'Card couldnt be created' });
     }
@@ -46,6 +48,10 @@ const createCard = async (req, res) => {
 
 const likeCard = async (req, res) => {
   try {
+    // eslint-disable-next-line eqeqeq
+    if (req.params.cardId == '') {
+      return res.status(400).send({ message: 'Поле "id карты" должно быть заполнено' });
+    }
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       // eslint-disable-next-line no-underscore-dangle
@@ -53,7 +59,7 @@ const likeCard = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(404).json({ message: 'Card not found' })
+      return res.status(404).json({ message: 'Card not found' });
     }
     return res.status(200).json(card);
   } catch (err) {
@@ -71,6 +77,10 @@ const likeCard = async (req, res) => {
 
 const dislikeCard = async (req, res) => {
   try {
+    // eslint-disable-next-line eqeqeq
+    if (req.params.cardId == '') {
+      return res.status(400).send({ message: 'Поле "id карты" должно быть заполнено' });
+    }
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       // eslint-disable-next-line no-underscore-dangle
@@ -78,7 +88,7 @@ const dislikeCard = async (req, res) => {
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(404).json({ message: 'Card not found' })
+      return res.status(404).json({ message: 'Card not found' });
     }
     return res.status(200).json(card);
   } catch (err) {
@@ -97,11 +107,14 @@ const dislikeCard = async (req, res) => {
 
 const deletCardById = async (req, res) => {
   try {
-    const card = await Card.findByIdAndRemove(req.params.cardId);
+    if (req.params.cardId === '') {
+      return res.status(400).send({ message: 'Поле "id карты" должно быть заполнено' });
+    }
+    const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
     if (!card) {
       return res.status(404).json({ message: 'Card not found' });
     }
-    return res.status(201).json(card);
+    return res.status(200).json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError') || (err.name === 'CastError') || (err.name === 'TypeError')) {
