@@ -7,12 +7,12 @@ function generateToken(payload) {
 
 function checkToken(res, token) {
   if (!token) {
-    return res.status(401).json('Неверный пользователь или пароль');
+    return res.status(401).json({ message: 'Неверный пользователь или пароль' });
   }
   try {
     return JWT.verify(token, tokenKey);
   } catch (err) {
-    return res.status(401).json('Неверный пользователь или пароль');
+    return res.status(401).json({ message: 'Неверный пользователь или пароль' });
   }
 }
 
