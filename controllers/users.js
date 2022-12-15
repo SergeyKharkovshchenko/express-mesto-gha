@@ -146,7 +146,7 @@ const updateAvatar = async (req, res) => {
 };
 
 // eslint-disable-next-line consistent-return
-const login = async (req, res, next) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     // eslint-disable-next-line no-undef

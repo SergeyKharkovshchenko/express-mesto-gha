@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const { PORT = 3000 } = process.env;
 const routerCards = require('./routes/cards');
@@ -24,9 +24,13 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+    avatar: Joi.string().required().min(2).max(30),
   }),
 }), createUser);
 app.post('/signin', login);
+app.use(errors());
 app.use('/users', checkAuth, routerUsers);
 app.use('/cards', checkAuth, routerCards);
 app.use('*', (req, res, next) => {
@@ -37,6 +41,8 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
 }, () => {
   app.listen(PORT, () => {
+    // eslint-disable-next-line no-console
     console.log(`App works, port ${PORT}`);
   });
 });
+
