@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { decodeToken } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;
 const ITEM_NOT_FOUND_ERROR = 404;
@@ -66,18 +67,22 @@ const dislikeCard = async (req, res) => {
 };
 
 const deletCardById = async (req, res) => {
-  try {
-    const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
-    if (!card) {
-      return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+  if (decodeToken(req.header.authorisation)) {
+    try {
+      const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
+      if (!card) {
+        return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+      }
+      return res.json(card);
+    } catch (err) {
+      if (err.name === 'CastError') {
+        return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      }
+      return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
     }
-    return res.json(card);
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
-    }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
+
+  return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
 module.exports = {
