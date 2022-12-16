@@ -91,7 +91,6 @@ const updateProfile = async (req, res) => {
     const token = req.headers.authorization || req.cookies.jwt;
     const { _id } = decode(token);
     const {
-      // user: { _id },
       body,
     } = req;
     const user = await User.findByIdAndUpdate(_id, body, {
@@ -109,7 +108,8 @@ const updateProfile = async (req, res) => {
     // if ((err.name = 'ValidationError')) {
     //   // eslint-disable-next-line no-shadow
     //   const errors = Object.values(err.errors).map((err) => err.message);
-    //   return res.status(BAD_REQUEST).json({ message: errors.join(', ') }); // 'Произошла ошибка' })
+    //   return res.status(BAD_REQUEST)
+    // .json({ message: errors.join(', ') }); // 'Произошла ошибка' })
     // }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
@@ -117,8 +117,9 @@ const updateProfile = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   try {
+    const token = req.headers.authorization || req.cookies.jwt;
+    const { _id } = decode(token);
     const {
-      user: { _id },
       body,
     } = req;
     if (!body.avatar) {
