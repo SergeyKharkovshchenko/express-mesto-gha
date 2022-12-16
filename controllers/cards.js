@@ -33,7 +33,7 @@ const createCard = async (req, res) => {
 
 const likeCard = async (req, res) => {
   try {
-    if (!req.params.cardId) return;
+    // if (!req.para76нприms.cardId) return;
     const token = req.headers.authorization || req.cookies.jwt;
     const { _id } = decode(token);
     // const { body } = req;
@@ -81,6 +81,9 @@ const deletCardById = async (req, res) => {
   const token = req.headers.authorization || req.cookies.jwt;
   if (token) {
     try {
+      const { _id } = decode(token);
+      const cardCheck = await Card.findById(req.params.cardId);
+      if (cardCheck.owner !== _id) return res.status(403).json({ message: 'Только владелец может удалить карточку' });
       const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
       if (!card) {
         return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });

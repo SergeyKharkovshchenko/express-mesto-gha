@@ -11,6 +11,7 @@ router.post('/', celebrate({
     link: Joi.string().required().min(2).regex(/https:\/\/.*/),
   }),
 }), createCard);
+
 router.delete('/:cardId', celebrate({ params: Joi.object().keys({ cardId: Joi.string().min(24) }) }), deletCardById);
 
 router.put('/:cardId/likes', celebrate({ params: Joi.object().keys({ cardId: Joi.string().min(24) }) }), likeCard);
