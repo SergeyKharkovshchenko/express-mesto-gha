@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 // const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
-const { BadRequestError, ServerError } = require('../middlewares/errors');
+const { BadRequestError } = require('../middlewares/errors');
 const { decode } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;

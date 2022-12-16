@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+// const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
+const { BadRequestError } = require('../middlewares/errors');
 const { generateToken, decode } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;
@@ -56,7 +58,7 @@ const getUserMe = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   const existingUserCheck = await User.findOne({ email: req.body.email });
   if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
   try {
@@ -77,10 +79,15 @@ const createUser = async (req, res) => {
     });
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if ((err.name = 'ValidationError')) {
-      // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
+    // if ((err.name = 'ValidationError')) {
+    //   // eslint-disable-next-line no-shadow
+    //   const errors = Object.values(err.errors).map((err) => err.message);
+    //   return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
+    // }
+    if (err.name === 'ValidationError') {
+      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+    } else {
+      next(err);
     }
     if (err.code === 11000) {
       return res.status(409).json({ message: 'Вы пытаетесь зарегистрироваться по уже существующему в базе email' });
@@ -118,7 +125,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
     const { _id } = decode(token);
@@ -142,16 +149,21 @@ const updateAvatar = async (req, res) => {
     return res.json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if ((err.name = 'ValidationError')) {
-      // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
+    // if ((err.name = 'ValidationError')) {
+    //   // eslint-disable-next-line no-shadow
+    //   const errors = Object.values(err.errors).map((err) => err.message);
+    //   return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
+    // }
+    if (err.name === 'ValidationError') {
+      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+    } else {
+      next(err);
     }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
@@ -173,8 +185,13 @@ const login = async (req, res) => {
       .json({ message: 'Авторизация прошла успешно' });
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if ((err.name = 'ValidationError')) {
-      return res.status(BAD_REQUEST).json({ message: 'Ошибка' });
+    // if ((err.name = 'ValidationError')) {
+    //   return res.status(BAD_REQUEST).json({ message: 'Ошибка' });
+    // }
+    if (err.name === 'ValidationError') {
+      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+    } else {
+      next(err);
     }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
