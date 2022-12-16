@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -6,18 +7,18 @@ class BadRequestError extends Error {
 }
 
 class ItemNotFoundError extends Error {
-    constructor(message) {
-      super(message);
-      this.statusCode = 404;
-    }
+  constructor(message) {
+    super(message);
+    this.statusCode = 404;
   }
+}
 
-  class ServerError extends Error {
-    constructor(message) {
-      super(message);
-      this.statusCode = 500;
-    }
+class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 500;
   }
+}
 
 
     module.exports = {

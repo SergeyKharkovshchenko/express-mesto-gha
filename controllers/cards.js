@@ -37,7 +37,7 @@ const createCard = async (req, res, next) => {
   }
 };
 
-const likeCard = async (req, res) => {
+const likeCard = async (req, res, next) => {
   try {
     // if (!req.para76нприms.cardId) return;
     const token = req.headers.authorization || req.cookies.jwt;
@@ -55,7 +55,10 @@ const likeCard = async (req, res) => {
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      next(new BadRequestError('Указан некорректный id'));
+      // return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+    } else {
+      next(err);
     }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
