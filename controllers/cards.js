@@ -50,17 +50,20 @@ const likeCard = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+      // return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+      return next(new ItemNotFoundError('Card not found'));//res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
     }
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      next(new BadRequestError('Указан некорректный id'));
+      return next(new BadRequestError('Указан некорректный id'));
       // return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
-    } else {
-      next(err);
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    next(err);
+  }
+
+   return next(new ServerError('Произошла ошибка'));
+    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 

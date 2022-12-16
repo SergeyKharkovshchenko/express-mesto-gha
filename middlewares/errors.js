@@ -20,7 +20,6 @@ class ServerError extends Error {
   }
 }
 
-
-    module.exports = {
-        BadRequestError, ItemNotFoundError, ServerError
-      };
+module.exports = {
+  BadRequestError, ItemNotFoundError, ServerError,
+};
