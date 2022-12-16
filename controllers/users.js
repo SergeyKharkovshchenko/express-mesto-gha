@@ -17,7 +17,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
@@ -28,12 +28,14 @@ const getUserById = async (req, res) => {
     return res.json(user);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res
-        .status(BAD_REQUEST)
-        .json({ message: 'Указан некорректный id' });
+      return next(new BadRequestError('Указан некорректный id'));
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    // return next(err);
+    // return res
+    //   .status(BAD_REQUEST)
+    //   .json({ message: 'Указан некорректный id' });
   }
+  return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
 const getUserMe = async (req, res) => {
