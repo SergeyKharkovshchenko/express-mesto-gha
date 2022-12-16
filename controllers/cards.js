@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
 const { decode } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;
@@ -14,7 +15,7 @@ const getAllCards = async (req, res) => {
   }
 };
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   const { name, link } = req.body;
   try {
     const token = req.headers.authorization || req.cookies.jwt;
@@ -24,8 +25,13 @@ const createCard = async (req, res) => {
     return res.json(card);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if (err.name = 'ValidationError') {
-      return res.status(BAD_REQUEST).json({ message: 'Произошла ошибка в name' });
+    // if (err.name = 'ValidationError') {
+    //   return res.status(BAD_REQUEST).json({ message: 'Произошла ошибка в name' });
+    // }
+    if (err.name === 'ValidationError') {
+      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+    } else {
+      next(err);
     }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }

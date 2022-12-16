@@ -18,12 +18,12 @@ router.patch('/me', celebrate({
     password: Joi.string().min(2).max(30),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().min(2).regex(/https:\/\/.*/),
+    avatar: Joi.string().min(2).regex(/https{0,1}:\/\/.*/),
   }),
 }), updateProfile);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().min(2).regex(/https:\/\/.*/),
+    avatar: Joi.string().min(2).regex(/https{0,1}:\/\/.*/),
   }),
 }), updateAvatar);
 router.use(errors());

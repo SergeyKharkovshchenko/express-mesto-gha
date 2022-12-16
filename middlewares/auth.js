@@ -27,7 +27,8 @@ function checkAuth(req, res, next) {
   if (checkResult) {
     return next();
   }
-  return res.status(403).json({ message: 'Доступ запрещен' });
+  return res.status(401).json({ message: 'Доступ запрещен' });
+  // return res.status(403).json({ message: 'Доступ запрещен' });
 }
 
 // eslint-disable-next-line camelcase
