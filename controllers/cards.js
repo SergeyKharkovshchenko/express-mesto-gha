@@ -45,13 +45,12 @@ const likeCard = async (req, res, next) => {
     // const { body } = req;
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      // { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
       { $addToSet: { likes: _id } }, // добавить _id в массив, если его там нет
       { new: true, runValidators: true },
     );
     if (!card) {
       // return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
-      return next(new ItemNotFoundError('Card not found'));
+      next(new ItemNotFoundError('Card not found'));
     }
     return res.json(card);
   } catch (err) {
