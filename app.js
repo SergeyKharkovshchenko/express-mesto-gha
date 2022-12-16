@@ -47,7 +47,6 @@ app.use((err, req, res, next) => {
   res.status(500).send({ message: 'На сервере произошла ошибка' });
 });
 
-
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
 }, () => {

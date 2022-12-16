@@ -51,7 +51,7 @@ const likeCard = async (req, res, next) => {
     );
     if (!card) {
       // return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
-      return next(new ItemNotFoundError('Card not found'));//res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+      return next(new ItemNotFoundError('Card not found'));
     }
     return res.json(card);
   } catch (err) {
@@ -62,9 +62,8 @@ const likeCard = async (req, res, next) => {
     next(err);
   }
 
-   return next(new ServerError('Произошла ошибка'));
-    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
-  }
+  return next(new ServerError('Произошла ошибка'));
+  // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
 const dislikeCard = async (req, res) => {
