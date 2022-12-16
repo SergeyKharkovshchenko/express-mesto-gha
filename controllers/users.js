@@ -35,7 +35,8 @@ const getUserById = async (req, res) => {
 };
 
 const getUserMe = async (req, res) => {
-  const token = req.headers.authorization || req.cookies.jwt;
+  // const token = req.headers.authorization || req.cookies.jwt;
+  const token = req.cookies.jwt;
   const { _id } = decode(token);
   try {
     const user = await User.findById(_id);
@@ -144,11 +145,9 @@ const updateAvatar = async (req, res) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // eslint-disable-next-line no-undef
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({ message: 'Неверный пользователь или пароль' });
@@ -157,16 +156,15 @@ const login = async (req, res) => {
     if (!match) {
       return res.status(403).json({ message: 'Неверный пользователь или пароль' });
     }
-
-    // const payload = { _id: user._id, user: user.email };
     const payload = { _id: user._id };
     const token = generateToken(payload);
     return res.cookie('jwt', token, {
       maxAge: 3600000,
-      httpOnly: true,
+      // httpOnly: true,
       sameSite: true,
     })
-      .send({ token }).json('Авторизация прошла успешно');
+      // .send({ token })
+      .json({ message: 'Авторизация прошла успешно' });
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
