@@ -85,11 +85,11 @@ const deletCardById = async (req, res) => {
       const cardCheck = await Card.findById(req.params.cardId);
       // eslint-disable-next-line eqeqeq
       if (cardCheck.owner != _id) {
-        return res.status(403).json({ message: `Только владелец может удалить карточку ${cardCheck.owner} = ${_id}` });
+        return res.status(404).json({ message: 'Только владелец может удалить карточку' });
       }
       const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
       if (!card) {
-        return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+        return res.status(404).json({ message: 'Card not found' });
       }
       return res.json(card);
     } catch (err) {
