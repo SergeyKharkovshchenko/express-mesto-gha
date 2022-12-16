@@ -35,8 +35,8 @@ const getUserById = async (req, res) => {
 };
 
 const getUserMe = async (req, res) => {
-  // const token = req.headers.authorization || req.cookies.jwt;
-  const token = req.cookies.jwt;
+  const token = req.headers.authorization || req.cookies.jwt;
+  // const token = req.cookies.jwt;
   const { _id } = decode(token);
   try {
     const user = await User.findById(_id);
@@ -88,8 +88,10 @@ const createUser = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
+    const token = req.headers.authorization || req.cookies.jwt;
+    const { _id } = decode(token);
     const {
-      user: { _id },
+      // user: { _id },
       body,
     } = req;
     const user = await User.findByIdAndUpdate(_id, body, {
@@ -104,11 +106,11 @@ const updateProfile = async (req, res) => {
     return res.json(user);
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
-    if ((err.name = 'ValidationError')) {
-      // eslint-disable-next-line no-shadow
-      const errors = Object.values(err.errors).map((err) => err.message);
-      return res.status(BAD_REQUEST).json({ message: errors.join(', ') }); // 'Произошла ошибка' })
-    }
+    // if ((err.name = 'ValidationError')) {
+    //   // eslint-disable-next-line no-shadow
+    //   const errors = Object.values(err.errors).map((err) => err.message);
+    //   return res.status(BAD_REQUEST).json({ message: errors.join(', ') }); // 'Произошла ошибка' })
+    // }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
