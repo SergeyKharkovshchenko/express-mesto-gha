@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const validator = require('validator');
 const User = require('../models/user');
 
 // eslint-disable-next-line camelcase
@@ -79,7 +78,6 @@ const createUser = async (req, res) => {
       _id: user._id,
     });
   } catch (err) {
-    console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
       const errors = Object.values(err.errors).map((err) => err.message);
