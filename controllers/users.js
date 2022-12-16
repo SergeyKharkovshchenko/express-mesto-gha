@@ -38,7 +38,7 @@ const getUserById = async (req, res, next) => {
   return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
-const getUserMe = async (req, res) => {
+const getUserMe = async (req, res, next) => {
   const token = req.headers.authorization || req.cookies.jwt;
   // const token = req.cookies.jwt;
   const { _id } = decode(token);
@@ -56,10 +56,13 @@ const getUserMe = async (req, res) => {
         .status(BAD_REQUEST)
         .json({ message: 'Указан некорректный id' });
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    // eslint-disable-next-line no-undef
+    next(err);
+    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
+// eslint-disable-next-line consistent-return
 const createUser = async (req, res, next) => {
   const existingUserCheck = await User.findOne({ email: req.body.email });
   if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
@@ -94,7 +97,8 @@ const createUser = async (req, res, next) => {
     if (err.code === 11000) {
       return res.status(409).json({ message: 'Вы пытаетесь зарегистрироваться по уже существующему в базе email' });
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    next(err);
+    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
@@ -161,7 +165,8 @@ const updateAvatar = async (req, res, next) => {
     } else {
       next(err);
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    return next(err);
+    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
@@ -195,7 +200,8 @@ const login = async (req, res, next) => {
     } else {
       next(err);
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    return next(err);
+    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
