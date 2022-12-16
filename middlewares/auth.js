@@ -31,4 +31,6 @@ function checkAuth(req, res, next) {
 }
 
 // eslint-disable-next-line camelcase
-module.exports = { generateToken, checkToken, checkAuth, decode };
+module.exports = {
+  generateToken, checkToken, checkAuth, decode,
+};

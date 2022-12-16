@@ -1,7 +1,5 @@
 const bcrypt = require('bcryptjs');
-// const cookieParser = require('cookie-parser');
 const User = require('../models/user');
-// eslint-disable-next-line camelcase
 const { generateToken, decode } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;
@@ -46,7 +44,7 @@ const getUserMe = async (req, res) => {
         .status(ITEM_NOT_FOUND_ERROR)
         .json({ message: 'User not found' });
     }
-    return res.json(user);
+    return res.status(200).json(user);
   } catch (err) {
     if (err.name === 'CastError') {
       return res
