@@ -71,7 +71,13 @@ const createUser = async (req, res) => {
       avatar: req.body.avatar,
       password: hash,
     });
-    return res.status(201).json(user);
+    return res.status(201).json({
+      name: user.name,
+      avatar: user.avatar,
+      about: user.about,
+      email: user.email,
+      _id: user._id,
+    });
   } catch (err) {
     console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
