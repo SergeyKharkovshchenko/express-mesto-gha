@@ -54,13 +54,13 @@ const likeCard = async (req, res, next) => {
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return next(new BadRequestError('Указан некорректный id'));
-      // return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      // return next(new BadRequestError('Указан некорректный id'));
+      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
     }
     next(err);
   }
-  return next(new ServerError('Произошла ошибка'));
-  // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+  // return next(new ServerError('Произошла ошибка'));
+  return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
 const dislikeCard = async (req, res) => {

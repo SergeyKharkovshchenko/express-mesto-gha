@@ -82,6 +82,9 @@ const createUser = async (req, res) => {
       const errors = Object.values(err.errors).map((err) => err.message);
       return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
     }
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'Вы пытаетесь зарегистрироваться по уже существующему в базе email' });
+    }
     return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
