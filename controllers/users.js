@@ -3,10 +3,6 @@ const User = require('../models/user');
 const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
 const { generateToken, decode } = require('../middlewares/auth');
 
-const BAD_REQUEST = 400;
-const ITEM_NOT_FOUND_ERROR = 404;
-// const SERVER_ERROR = 500;
-
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
@@ -21,9 +17,6 @@ const getUserById = async (req, res, next) => {
     const user = await User.findById(req.params.userId);
     if (!user) {
       throw new ItemNotFoundError('User not found');
-      // return res
-      //   .status(ITEM_NOT_FOUND_ERROR)
-      //   .json({ message: 'User not found' });
     }
     return res.json(user);
   } catch (err) {
@@ -40,9 +33,7 @@ const getUserMe = async (req, res, next) => {
   try {
     const user = await User.findById(_id);
     if (!user) {
-      return res
-        .status(ITEM_NOT_FOUND_ERROR)
-        .json({ message: 'User not found' });
+      throw new ItemNotFoundError('User not found');
     }
     return res.status(200).json(user);
   } catch (err) {
@@ -95,9 +86,7 @@ const updateProfile = async (req, res, next) => {
       runValidators: true,
     });
     if (!user) {
-      return res
-        .status(ITEM_NOT_FOUND_ERROR)
-        .json({ message: 'User not found' });
+      throw new ItemNotFoundError('User not found');
     }
     return res.json(user);
   } catch (err) {
@@ -113,18 +102,14 @@ const updateAvatar = async (req, res, next) => {
       body,
     } = req;
     if (!body.avatar) {
-      return res
-        .status(BAD_REQUEST)
-        .send({ message: 'Поле avatar должно быть заполнено' });
+      throw new BadRequestError('Поле avatar должно быть заполнено');
     }
     const user = await User.findByIdAndUpdate(_id, body, {
       new: true,
       runValidators: true,
     });
     if (!user) {
-      return res
-        .status(ITEM_NOT_FOUND_ERROR)
-        .json({ message: 'User avatar not found' });
+      throw new ItemNotFoundError('User avatar not found');
     }
     return res.json(user);
   } catch (err) {

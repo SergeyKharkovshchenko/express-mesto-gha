@@ -1,18 +1,13 @@
 const Card = require('../models/card');
-// const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
-const { BadRequestError } = require('../middlewares/errors');
+const { BadRequestError, ItemNotFoundError } = require('../middlewares/errors');
 const { decode } = require('../middlewares/auth');
 
-const BAD_REQUEST = 400;
-const ITEM_NOT_FOUND_ERROR = 404;
-const SERVER_ERROR = 500;
-
-const getAllCards = async (req, res) => {
+const getAllCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
     return res.json(cards);
   } catch (err) {
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    return next(err);
   }
 };
 
@@ -24,75 +19,64 @@ const createCard = async (req, res, next) => {
     const card = await Card.create({ name, link, owner: _id });
     return res.json(card);
   } catch (err) {
-    // if (err.name = 'ValidationError') {
-    //   return res.status(BAD_REQUEST).json({ message: 'Произошла ошибка в name' });
-    // }
     if (err.name === 'ValidationError') {
       next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-    } else {
-      next(err);
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    return next(err);
   }
 };
 
 const likeCard = async (req, res, next) => {
   try {
-    // if (!req.para76нприms.cardId) return;
     const token = req.headers.authorization || req.cookies.jwt;
     const { _id } = decode(token);
-    // const { body } = req;
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
       { $addToSet: { likes: _id } }, // добавить _id в массив, если его там нет
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
-      // next(new ItemNotFoundError('Card not found'));
+      throw new ItemNotFoundError('Card not found');
     }
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      // return next(new BadRequestError('Указан некорректный id'));
-      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      return next(new BadRequestError('Указан некорректный id'));
     }
-    next(err);
+    return next(err);
   }
-  // return next(new ServerError('Произошла ошибка'));
-  return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
-const dislikeCard = async (req, res) => {
+const dislikeCard = async (req, res, next) => {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
     const { _id } = decode(token);
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      // { $pull: { likes: req.user._id } }, // убрать _id из массива
       { $pull: { likes: _id } }, // убрать _id из массива
       { new: true, runValidators: true },
     );
     if (!card) {
-      return res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Card not found' });
+      throw new ItemNotFoundError('Card not found');
     }
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      return next(new BadRequestError('Указан некорректный id'));
     }
-    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+    return next(err);
   }
 };
 
-const deletCardById = async (req, res) => {
+// eslint-disable-next-line consistent-return
+const deletCardById = async (req, res, next) => {
   const token = req.headers.authorization || req.cookies.jwt;
   if (token) {
     try {
       const { _id } = decode(token);
       const cardCheck = await Card.findById(req.params.cardId);
       if (!cardCheck) {
-        return res.status(404).json({ message: 'Card not found' });
+        throw new ItemNotFoundError('Card not found');
       }
       // eslint-disable-next-line eqeqeq
       if (cardCheck.owner != _id) {
@@ -102,12 +86,11 @@ const deletCardById = async (req, res) => {
       return res.json(card);
     } catch (err) {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+        return next(new BadRequestError('Указан некорректный id'));
       }
-      return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+      return next(err);
     }
   }
-  return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
 
 module.exports = {
