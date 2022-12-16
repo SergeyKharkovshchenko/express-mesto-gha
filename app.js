@@ -44,7 +44,17 @@ app.use('*', (req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  res.status(500).send({ message: 'На сервере произошла ошибка' });
+  // если у ошибки нет статуса, выставляем 500
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      // проверяем статус и выставляем сообщение в зависимости от него
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
 });
 
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
