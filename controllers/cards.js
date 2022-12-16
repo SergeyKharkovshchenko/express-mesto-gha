@@ -55,8 +55,8 @@ const likeCard = async (req, res, next) => {
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      next(new BadRequestError('Указан некорректный id'));
-      // return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      // next(new BadRequestError('Указан некорректный id'));
+      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
     }
     next(err);
   }
