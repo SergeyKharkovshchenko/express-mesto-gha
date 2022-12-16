@@ -5,6 +5,10 @@ function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
 }
 
+function decode(token) {
+  return JWT.decode(token);
+}
+
 function checkToken(res, token) {
   if (!token) {
     return res.status(401).json({ message: 'Неверный пользователь или пароль' });
@@ -27,4 +31,4 @@ function checkAuth(req, res, next) {
 }
 
 // eslint-disable-next-line camelcase
-module.exports = { generateToken, checkToken, checkAuth };
+module.exports = { generateToken, checkToken, checkAuth, decode };

@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
+// const cookieParser = require('cookie-parser');
 const User = require('../models/user');
-
 // eslint-disable-next-line camelcase
-const { generateToken } = require('../middlewares/auth');
+const { generateToken, decode } = require('../middlewares/auth');
 
 const BAD_REQUEST = 400;
 const ITEM_NOT_FOUND_ERROR = 404;
@@ -27,7 +27,6 @@ const getUserById = async (req, res) => {
     }
     return res.json(user);
   } catch (err) {
-    console.error(err);
     if (err.name === 'CastError') {
       return res
         .status(BAD_REQUEST)
@@ -38,11 +37,10 @@ const getUserById = async (req, res) => {
 };
 
 const getUserMe = async (req, res) => {
+  const token = req.headers.authorization || req.cookies.jwt;
+  const { _id } = decode(token);
   try {
-    // const {
-    //   user: { email },
-    // } = req;
-    const user = await User.findById(req.body.email);
+    const user = await User.findById(_id);
     if (!user) {
       return res
         .status(ITEM_NOT_FOUND_ERROR)
@@ -50,7 +48,6 @@ const getUserMe = async (req, res) => {
     }
     return res.json(user);
   } catch (err) {
-    console.error(err);
     if (err.name === 'CastError') {
       return res
         .status(BAD_REQUEST)
@@ -61,8 +58,8 @@ const getUserMe = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const existingUser = await User.findOne({ email: req.body.email });
-  if (existingUser) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
+  const existingUserCheck = await User.findOne({ email: req.body.email });
+  if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
   try {
     const hash = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
@@ -82,6 +79,7 @@ const createUser = async (req, res) => {
   } catch (err) {
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
+      // eslint-disable-next-line no-shadow
       const errors = Object.values(err.errors).map((err) => err.message);
       return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
     }
@@ -106,7 +104,6 @@ const updateProfile = async (req, res) => {
     }
     return res.json(user);
   } catch (err) {
-    console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
       // eslint-disable-next-line no-shadow
@@ -139,7 +136,6 @@ const updateAvatar = async (req, res) => {
     }
     return res.json(user);
   } catch (err) {
-    console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
       // eslint-disable-next-line no-shadow
@@ -157,11 +153,11 @@ const login = async (req, res) => {
     // eslint-disable-next-line no-undef
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      return res.status(401).json('Неверный пользователь или пароль');
+      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(403).json('Неверный пользователь или пароль');
+      return res.status(403).json({ message: 'Неверный пользователь или пароль' });
     }
 
     // const payload = { _id: user._id, user: user.email };
@@ -172,9 +168,8 @@ const login = async (req, res) => {
       httpOnly: true,
       sameSite: true,
     })
-      .send({ token });
+      .send({ token }).json('Авторизация прошла успешно');
   } catch (err) {
-    console.error(err);
     // eslint-disable-next-line no-constant-condition, no-cond-assign
     if ((err.name = 'ValidationError')) {
       return res.status(BAD_REQUEST).json({ message: 'Ошибка' });

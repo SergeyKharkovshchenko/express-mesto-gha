@@ -29,10 +29,15 @@ app.post('/signup', celebrate({
     avatar: Joi.string().min(2).regex(/https:\/\/.*/),
   }),
 }), createUser);
-app.post('/signin', login);
-app.use(errors());
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(2).max(30),
+  }),
+}), login);
 app.use('/users', checkAuth, routerUsers);
 app.use('/cards', checkAuth, routerCards);
+app.use(errors());
 app.use('*', (req, res, next) => {
   res.status(ITEM_NOT_FOUND_ERROR).json({ message: 'Неизвестная науке ошибка' });
   next();
@@ -45,4 +50,3 @@ mongoose.connect('mongodb://127.0.0.1/mestodb', {
     console.log(`App works, port ${PORT}`);
   });
 });
-
