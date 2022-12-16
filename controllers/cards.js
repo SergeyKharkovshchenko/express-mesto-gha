@@ -45,6 +45,7 @@ const likeCard = async (req, res, next) => {
     // const { body } = req;
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
+      // { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
       { $addToSet: { likes: _id } }, // добавить _id в массив, если его там нет
       { new: true, runValidators: true },
     );
@@ -55,12 +56,11 @@ const likeCard = async (req, res, next) => {
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
-      // next(new BadRequestError('Указан некорректный id'));
-      return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
+      return next(new BadRequestError('Указан некорректный id'));
+      // return res.status(BAD_REQUEST).json({ message: 'Указан некорректный id' });
     }
     next(err);
   }
-
   return next(new ServerError('Произошла ошибка'));
   // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
 };
