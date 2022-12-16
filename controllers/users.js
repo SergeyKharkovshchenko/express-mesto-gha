@@ -13,7 +13,6 @@ const getAllUsers = async (req, res, next) => {
     return res.json(users);
   } catch (err) {
     return next(new ServerError('Произошла ошибка'));
-    // return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
 };
 
@@ -21,7 +20,7 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return next(new ItemNotFoundError('User not found'));
+      next(new ItemNotFoundError('User not found'));
       // return res
       //   .status(ITEM_NOT_FOUND_ERROR)
       //   .json({ message: 'User not found' });
