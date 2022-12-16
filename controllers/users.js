@@ -61,6 +61,7 @@ const getUserMe = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
+  await User.findOne({ email: req.body.email }, res.status(400).json({ message: '!!!!!!!!!' }));
   try {
     const hash = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
