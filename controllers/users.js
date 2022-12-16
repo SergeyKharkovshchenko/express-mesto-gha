@@ -62,26 +62,25 @@ const getUserMe = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  if (validator.isEmail(req.body.email)) {
-    try {
-      const hash = await bcrypt.hash(req.body.password, 10);
-      const user = await User.create({
-        email: req.body.email,
-        password: hash,
-      });
-      return res.status(201).json(user);
-    } catch (err) {
-      console.error(err);
-      // eslint-disable-next-line no-constant-condition, no-cond-assign
-      if ((err.name = 'ValidationError')) {
-        // eslint-disable-next-line no-shadow
-        const errors = Object.values(err.errors).map((err) => err.message);
-        return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
-      }
-      return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({
+      email: req.body.email,
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+      password: hash,
+    });
+    return res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    // eslint-disable-next-line no-constant-condition, no-cond-assign
+    if ((err.name = 'ValidationError')) {
+      const errors = Object.values(err.errors).map((err) => err.message);
+      return res.status(BAD_REQUEST).json({ message: errors.join(', ') });
     }
+    return res.status(SERVER_ERROR).json({ message: 'Произошла ошибка' });
   }
-  return res.status(BAD_REQUEST).json({ message: 'Некорректно введен е-мейл' });
 };
 
 const updateProfile = async (req, res) => {
