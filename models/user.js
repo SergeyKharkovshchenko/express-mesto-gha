@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (mail) => isEmail(mail),
+      validator: (email) => isEmail(email),
       message: (props) => `Неверный емейл: ${props.value}`,
     },
   },
@@ -36,7 +36,7 @@ const UserSchema = new mongoose.Schema({
     required: false,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (link) => isURL(link),
+      validator: (avatar) => isURL(avatar),
       message: (props) => `Неверный адрес: ${props.value}`,
     },
   },
