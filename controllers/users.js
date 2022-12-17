@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
+const { BadRequestError, ServerError } = require('../middlewares/errors');
 const { generateToken, decode } = require('../middlewares/auth');
+const ItemNotFoundError = require('../middlewares/ItemNotFoundError');
 
 const getAllUsers = async (req, res, next) => {
   try {
