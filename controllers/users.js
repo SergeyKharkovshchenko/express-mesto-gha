@@ -33,7 +33,7 @@ const getUserMe = async (req, res, next) => {
   try {
     const user = await User.findById(_id);
     if (!user) {
-      next(new ItemNotFoundError('User not found'));
+      throw new ItemNotFoundError('User not found');
     }
     return res.status(200).json(user);
   } catch (err) {
