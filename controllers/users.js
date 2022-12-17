@@ -16,8 +16,8 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
+      return next(new ItemNotFoundError('User not found'));
       // throw new ItemNotFoundError('User not found');
-      throw new BadRequestError('!!!');
     }
     return res.json(user);
   } catch (err) {
