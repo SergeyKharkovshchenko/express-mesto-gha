@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 
 const {
   getAllUsers,
@@ -11,21 +11,21 @@ const {
 
 router.get('/', getAllUsers);
 router.get('/me', getUserMe);
-router.get('/:userId', celebrate({ params: Joi.object().keys({ userId: Joi.string().min(24) }) }), getUserById);
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().length(24).required().regex(/[A-Fa-f0-9]+/),
+  }),
+}), getUserById);
 router.patch('/me', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().email(),
-    password: Joi.string().min(2).max(30),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().min(2).regex(/https{0,1}:\/\/.*/),
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi.string().min(2).max(30).required(),
   }),
 }), updateProfile);
 router.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().min(2).regex(/https{0,1}:\/\/.*/),
+    avatar: Joi.string().required().regex(/https{0,1}:\/\/.*/),
   }),
 }), updateAvatar);
-router.use(errors());
 
 module.exports = router;
