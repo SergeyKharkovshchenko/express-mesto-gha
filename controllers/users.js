@@ -16,8 +16,7 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return next(new ItemNotFoundError('User not found'));
-      // throw new ItemNotFoundError('User not found');
+      throw new ItemNotFoundError('User not found');
     }
     return res.json(user);
   } catch (err) {
@@ -34,7 +33,7 @@ const getUserMe = async (req, res, next) => {
   try {
     const user = await User.findById(_id);
     if (!user) {
-      throw new ItemNotFoundError('User not found');
+      next(new ItemNotFoundError('User not found'));
     }
     return res.status(200).json(user);
   } catch (err) {
