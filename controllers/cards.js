@@ -64,8 +64,8 @@ const dislikeCard = async (req, res, next) => {
 };
 
 const deletCardById = async (req, res, next) => {
-  const token = req.headers.authorization || req.cookies.jwt;
-  if (token) {
+  // const token = req.headers.authorization || req.cookies.jwt;
+  // if (token) {
     try {
       const { _id } = decode(token);
       const cardCheck = await Card.findById(req.params.cardId);
@@ -84,7 +84,7 @@ const deletCardById = async (req, res, next) => {
       }
       return next(err);
     }
-  }
+  // }
 };
 
 module.exports = {
