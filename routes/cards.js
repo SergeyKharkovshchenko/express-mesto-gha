@@ -13,7 +13,8 @@ router.post('/', celebrate({
   }),
 }), createCard);
 
-router.delete('/:cardId', celebrate({ params: Joi.object().keys({ cardId: Joi.string().length(24).required().regex(/[A-Fa-f0-9]+/) }) }), deletCardById);
+router.delete('/:cardId', celebrate({ params: Joi.object().keys({ cardId: Joi.string().length(24).required() }) }), deletCardById);
+// .regex(/[A-Fa-f0-9]/)
 
 router.put('/:cardId/likes', celebrate({ params: Joi.string().length(24).required().regex(/[A-Fa-f0-9]+/) }), likeCard);
 router.delete('/:cardId/likes', celebrate({ params: Joi.string().length(24).required().regex(/[A-Fa-f0-9]+/) }), dislikeCard);
