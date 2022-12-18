@@ -10,7 +10,6 @@ function decode(token) {
   return JWT.decode(token);
 }
 
-// eslint-disable-next-line consistent-return
 function checkToken(res, token, next) {
   if (!token) {
     throw new UnauthorizedError('Пользователь не авторизован');
