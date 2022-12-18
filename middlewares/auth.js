@@ -1,7 +1,8 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
 // const { UnauthorizedError } = require('./errors');
-const UnauthorizedError = require('./UnauthorizedError');
+// eslint-disable-next-line import/extensions
+const UnauthorizedError = require('./UnauthorizedError.js');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
