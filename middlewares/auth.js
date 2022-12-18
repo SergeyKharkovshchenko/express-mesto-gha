@@ -13,7 +13,7 @@ function decode(token) {
 function checkToken(res, token, next) {
   try {
     if (!token) {
-      return new UnauthorizedError('Пользователь не авторизован');
+      throw new UnauthorizedError('Пользователь не авторизован');
       // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     return JWT.verify(token, tokenKey);
