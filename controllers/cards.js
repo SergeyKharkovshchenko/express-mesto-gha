@@ -72,7 +72,8 @@ const deletCardById = async (req, res, next) => {
       if (!cardCheck) {
         throw new ItemNotFoundError('Card not found');
       }
-      if (cardCheck.owner !== req.user._id) {
+      // eslint-disable-next-line eqeqeq
+      if (cardCheck.owner != req.user._id) {
         return res.status(403).json({ message: 'Только владелец может удалить карточку' });
       }
       const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
