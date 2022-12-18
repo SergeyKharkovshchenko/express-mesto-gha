@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { BadRequestError, ItemNotFoundError, ServerError } = require('../middlewares/errors');
+const { BadRequestError, ItemNotFoundError } = require('../middlewares/errors');
 const { generateToken, decode } = require('../middlewares/auth');
 
 const getAllUsers = async (req, res, next) => {
@@ -46,17 +46,19 @@ const getUserMe = async (req, res, next) => {
 };
 
 const createUser = async (req, res, next) => {
-  const existingUserCheck = await User.findOne({ email: req.body.email });
-  if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
+  // const existingUserCheck = await User.findOne({ email: req.body.email });
+  // eslint-disable-next-line max-len
+  // if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
   try {
     const hash = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({
-      email: req.body.email,
-      name: req.body.name,
-      about: req.body.about,
-      avatar: req.body.avatar,
-      password: hash,
-    });
+    const user = await User.create({ ...req.body, password: hash });
+    // User.create({
+    //   email: req.body.email,
+    //   name: req.body.name,
+    //   about: req.body.about,
+    //   avatar: req.body.avatar,
+    //   password: hash,
+    // });
     return res.status(201).json({
       name: user.name,
       avatar: user.avatar,
@@ -77,12 +79,12 @@ const createUser = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const token = req.headers.authorization || req.cookies.jwt;
-    const { _id } = decode(token);
-    const {
-      body,
-    } = req;
-    const user = await User.findByIdAndUpdate(_id, body, {
+    // const token = req.headers.authorization || req.cookies.jwt;
+    // const { _id } = decode(token);
+    // const {
+    //   body,
+    // } = req;
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -97,15 +99,15 @@ const updateProfile = async (req, res, next) => {
 
 const updateAvatar = async (req, res, next) => {
   try {
-    const token = req.headers.authorization || req.cookies.jwt;
-    const { _id } = decode(token);
-    const {
-      body,
-    } = req;
-    if (!body.avatar) {
-      throw new BadRequestError('Поле avatar должно быть заполнено');
-    }
-    const user = await User.findByIdAndUpdate(_id, body, {
+    // const token = req.headers.authorization || req.cookies.jwt;
+    // const { _id } = decode(token);
+    // const {
+    //   body,
+    // } = req;
+    // if (!body.avatar) {
+    //   throw new BadRequestError('Поле avatar должно быть заполнено');
+    // }
+    const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -126,6 +128,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
+      // throw
       return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const match = await bcrypt.compare(password, user.password);
@@ -141,11 +144,12 @@ const login = async (req, res, next) => {
     })
       .json({ message: 'Авторизация прошла успешно' });
   } catch (err) {
-    if (err.name === 'ValidationError') {
-      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-    } else {
-      next(err);
-    }
+    // if (err.name === 'ValidationError') {
+    // eslint-disable-next-line max-len
+    //   next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+    // } else {
+    //   next(err);
+    // }
     return next(err);
   }
 };
