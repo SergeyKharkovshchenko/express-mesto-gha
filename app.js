@@ -37,7 +37,7 @@ app.use('/users', checkAuth, routerUsers);
 app.use('/cards', checkAuth, routerCards);
 app.use(errors());
 app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
   res.status(statusCode);
