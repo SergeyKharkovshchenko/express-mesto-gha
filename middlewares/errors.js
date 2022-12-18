@@ -3,7 +3,7 @@ const BadRequestError = require('./BadRequestError');
 const ServerError = require('./ServerError');
 // const UnauthorizedError = require('./UnauthorizedError');
 
-class UnauthorizedError extends Error {
+module.exports.UnauthorizedError = class UnauthorizedError extends Error {
   constructor(message) {
     super(message);
     this.name = 'UnauthorizedError';
@@ -23,5 +23,5 @@ module.exports = {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
-  UnauthorizedError,
+  // UnauthorizedError,
 };
