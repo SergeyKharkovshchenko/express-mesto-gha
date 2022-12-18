@@ -69,11 +69,11 @@ const deletCardById = async (req, res, next) => {
     if (!cardCheck) {
       throw new ItemNotFoundError('Card not found');
     }
-    if (cardCheck.owner.value !== req.user._id) {
-      return res.status(403).json({ message: 'Только владелец может удалить карточку' });
+    if (cardCheck.owner.value === req.user._id) {
+      const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
+      return res.json(card);
     }
-    const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
-    return res.json(card);
+    return res.status(403).json({ message: 'Только владелец может удалить карточку' });
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Указан некорректный id'));
