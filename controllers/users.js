@@ -8,7 +8,7 @@ const getAllUsers = async (req, res, next) => {
     const users = await User.find({});
     return res.json(users);
   } catch (err) {
-    return next(new ServerError('Произошла ошибка'));
+    return next(err);
   }
 };
 
@@ -28,10 +28,11 @@ const getUserById = async (req, res, next) => {
 };
 
 const getUserMe = async (req, res, next) => {
-  const token = req.headers.authorization || req.cookies.jwt;
-  const { _id } = decode(token);
+  // const token = req.headers.authorization || req.cookies.jwt;
+  // const { _id } = decode(token);
   try {
-    const user = await User.findById(_id);
+    // const user = await User.findById(_id);
+    const user = await User.findById(req.user._id);
     if (!user) {
       throw new ItemNotFoundError('User not found');
     }

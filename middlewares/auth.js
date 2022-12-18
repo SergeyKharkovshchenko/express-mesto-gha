@@ -23,14 +23,15 @@ function checkToken(res, token, next) {
 function checkAuth(req, res, next) {
   const token = req.headers.authorization || req.cookies.jwt;
   const checkResult = checkToken(res, token);
-
+  const { _id } = decode(token);
+  const payload = { _id };
+  req.user = payload;
   if (checkResult) {
     return next();
   }
   return res.status(401).json({ message: 'Доступ запрещен' });
 }
 
-// eslint-disable-next-line camelcase
 module.exports = {
   generateToken, checkToken, checkAuth, decode,
 };
