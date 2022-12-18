@@ -36,12 +36,6 @@ app.post('/signin', celebrate({
 app.use('/users', checkAuth, routerUsers);
 app.use('/cards', checkAuth, routerCards);
 app.use(errors());
-app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
-// app.use('*', (req, res, next) => {
-//   res.status(404).json({ message: 'Неизвестная науке ошибка' });
-//   next();
-// });
-
 app.use((err, req, res) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
@@ -55,6 +49,11 @@ app.use((err, req, res) => {
         : message,
     });
 });
+app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
+// app.use('*', (req, res, next) => {
+//   res.status(404).json({ message: 'Неизвестная науке ошибка' });
+//   next();
+// });
 
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
