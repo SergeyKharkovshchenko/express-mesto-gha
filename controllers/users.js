@@ -28,10 +28,7 @@ const getUserById = async (req, res, next) => {
 };
 
 const getUserMe = async (req, res, next) => {
-  // const token = req.headers.authorization || req.cookies.jwt;
-  // const { _id } = decode(token);
   try {
-    // const user = await User.findById(_id);
     const user = await User.findById(req.user._id);
     if (!user) {
       throw new ItemNotFoundError('User not found');
@@ -46,19 +43,9 @@ const getUserMe = async (req, res, next) => {
 };
 
 const createUser = async (req, res, next) => {
-  // const existingUserCheck = await User.findOne({ email: req.body.email });
-  // eslint-disable-next-line max-len
-  // if (existingUserCheck) { return res.status(409).json({ message: 'Пользователь с таким емейлом существует' }); }
   try {
     const hash = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({ ...req.body, password: hash });
-    // User.create({
-    //   email: req.body.email,
-    //   name: req.body.name,
-    //   about: req.body.about,
-    //   avatar: req.body.avatar,
-    //   password: hash,
-    // });
     return res.status(201).json({
       name: user.name,
       avatar: user.avatar,
@@ -79,11 +66,6 @@ const createUser = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    // const token = req.headers.authorization || req.cookies.jwt;
-    // const { _id } = decode(token);
-    // const {
-    //   body,
-    // } = req;
     const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
@@ -99,14 +81,6 @@ const updateProfile = async (req, res, next) => {
 
 const updateAvatar = async (req, res, next) => {
   try {
-    // const token = req.headers.authorization || req.cookies.jwt;
-    // const { _id } = decode(token);
-    // const {
-    //   body,
-    // } = req;
-    // if (!body.avatar) {
-    //   throw new BadRequestError('Поле avatar должно быть заполнено');
-    // }
     const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
       runValidators: true,
@@ -117,7 +91,7 @@ const updateAvatar = async (req, res, next) => {
     return res.json(user);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      return next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
     }
     return next(err);
   }
@@ -144,12 +118,6 @@ const login = async (req, res, next) => {
     })
       .json({ message: 'Авторизация прошла успешно' });
   } catch (err) {
-    // if (err.name === 'ValidationError') {
-    // eslint-disable-next-line max-len
-    //   next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
-    // } else {
-    //   next(err);
-    // }
     return next(err);
   }
 };

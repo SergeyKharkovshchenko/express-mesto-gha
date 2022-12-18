@@ -14,13 +14,11 @@ const getAllCards = async (req, res, next) => {
 const createCard = async (req, res, next) => {
   const { name, link } = req.body;
   try {
-    const token = req.headers.authorization || req.cookies.jwt;
-    const { _id } = decode(token);
-    const card = await Card.create({ name, link, owner: _id });
+    const card = await Card.create({ name, link, owner: req.user._id });
     return res.json(card);
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      return next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
     }
     return next(err);
   }
@@ -28,12 +26,10 @@ const createCard = async (req, res, next) => {
 
 const likeCard = async (req, res, next) => {
   try {
-    const token = req.headers.authorization || req.cookies.jwt;
-    const { _id } = decode(token);
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $addToSet: { likes: _id } }, // добавить _id в массив, если его там нет
-      { new: true, runValidators: true },
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
     );
     if (!card) {
       throw new ItemNotFoundError('Card not found');
@@ -49,12 +45,10 @@ const likeCard = async (req, res, next) => {
 
 const dislikeCard = async (req, res, next) => {
   try {
-    const token = req.headers.authorization || req.cookies.jwt;
-    const { _id } = decode(token);
     const card = await Card.findByIdAndUpdate(
       req.params.cardId,
-      { $pull: { likes: _id } }, // убрать _id из массива
-      { new: true, runValidators: true },
+      { $pull: { likes: req.user._id } },
+      { new: true },
     );
     if (!card) {
       return next(new ItemNotFoundError('Card not found'));
@@ -69,29 +63,27 @@ const dislikeCard = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 const deletCardById = async (req, res, next) => {
-  const token = req.headers.authorization || req.cookies.jwt;
-  if (token) {
-    try {
-      const { _id } = decode(token);
-      const cardCheck = await Card.findById(req.params.cardId);
-      if (!cardCheck) {
-        throw new ItemNotFoundError('Card not found');
-      }
-      // eslint-disable-next-line eqeqeq
-      if (cardCheck.owner != _id) {
-        return res.status(403).json({ message: 'Только владелец может удалить карточку' });
-      }
-      const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
-      return res.json(card);
-    } catch (err) {
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Указан некорректный id'));
-      }
-      return next(err);
+  // const token = req.headers.authorization || req.cookies.jwt;
+  // if (token) {
+  try {
+    // const { _id } = decode(token);
+    const cardCheck = await Card.findById(req.params.cardId);
+    if (!cardCheck) {
+      throw new ItemNotFoundError('Card not found');
     }
+    if (cardCheck.owner !== req.user._id) {
+      return res.status(403).json({ message: 'Только владелец может удалить карточку' });
+    }
+    const card = await Card.findByIdAndRemove(req.params.cardId);
+    return res.json(card);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new BadRequestError('Указан некорректный id'));
+    }
+    return next(err);
   }
+  // }
 };
 
 module.exports = {
