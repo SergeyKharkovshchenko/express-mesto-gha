@@ -14,8 +14,8 @@ function decode(token) {
 function checkToken(res, token, next) {
   try {
     if (!token) {
-      throw new UnauthorizedError('Пользователь не авторизован 1');
-      // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      // throw new UnauthorizedError('Пользователь не авторизован 1');
+      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     if (token === '') {
       throw new UnauthorizedError('Пользователь не авторизован 2');
