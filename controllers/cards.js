@@ -57,7 +57,7 @@ const dislikeCard = async (req, res, next) => {
       { new: true, runValidators: true },
     );
     if (!card) {
-      return new ItemNotFoundError('Card not found');
+      throw new ItemNotFoundError('Card not found');
     }
     return res.json(card);
   } catch (err) {

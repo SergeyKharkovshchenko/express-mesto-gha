@@ -42,7 +42,7 @@ app.use((err, req, res) => {
 
   return res
     .status(statusCode)
-    .send({
+    .json({
       // проверяем статус и выставляем сообщение в зависимости от него
       message: statusCode === 500
         ? 'На сервере произошла ошибка'
