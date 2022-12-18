@@ -75,7 +75,7 @@ const deletCardById = async (req, res, next) => {
     if (cardCheck.owner !== req.user._id) {
       return res.status(403).json({ message: 'Только владелец может удалить карточку' });
     }
-    const card = await Card.findByIdAndRemove(req.params.cardId);
+    const card = await Card.findByIdAndRemove(req.params.cardId, { new: true });
     return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
