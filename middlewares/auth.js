@@ -1,6 +1,6 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-const UnauthorizedError = require('./UnauthorizedError');
+const UnauthorizedError = require('./errors');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
@@ -31,7 +31,6 @@ function checkAuth(req, res, next) {
     return next();
   }
   return res.status(401).json({ message: 'Доступ запрещен' });
-  // return res.status(403).json({ message: 'Доступ запрещен' });
 }
 
 // eslint-disable-next-line camelcase
