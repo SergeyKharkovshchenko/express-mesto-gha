@@ -6,6 +6,7 @@
 class ItemNotFoundError extends Error {
   constructor(message) {
     super(message);
+    this.name = 'ItemNotFoundError';
     this.statusCode = 404;
   }
 }
@@ -13,6 +14,7 @@ class ItemNotFoundError extends Error {
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
+    this.name = 'BadRequestError';
     this.statusCode = 400;
   }
 }
@@ -20,6 +22,7 @@ class BadRequestError extends Error {
 class ServerError extends Error {
   constructor(message) {
     super(message);
+    this.name = 'ServerError';
     this.statusCode = 500;
   }
 }

@@ -36,18 +36,16 @@ app.post('/signin', celebrate({
 app.use('/users', checkAuth, routerUsers);
 app.use('/cards', checkAuth, routerCards);
 app.use(errors());
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
-
-  return res
-    .status(statusCode)
-    .json({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
+  res.status(statusCode);
+  res.json({
+    message: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  });
+  console.log(res);
 });
 app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
 // app.use('*', (req, res, next) => {
