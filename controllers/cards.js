@@ -67,13 +67,12 @@ const deletCardById = async (req, res, next) => {
   // const token = req.headers.authorization || req.cookies.jwt;
   // if (token) {
     try {
-      const { _id } = decode(token);
+      // const { _id } = decode(token);
       const cardCheck = await Card.findById(req.params.cardId);
       if (!cardCheck) {
         throw new ItemNotFoundError('Card not found');
       }
-      // eslint-disable-next-line eqeqeq
-      if (cardCheck.owner != _id) {
+      if (cardCheck.owner !== req.user._id) {
         return res.status(403).json({ message: 'Только владелец может удалить карточку' });
       }
       const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
