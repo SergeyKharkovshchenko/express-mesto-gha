@@ -17,6 +17,6 @@ router.delete('/:cardId', celebrate({ params: Joi.object().keys({ cardId: Joi.st
 // .regex(/[A-Fa-f0-9]/)
 
 router.put('/:cardId/likes', celebrate({ params: Joi.object().keys({ cardId: Joi.string().length(24).required().regex(/[A-Fa-f0-9]*/) }) }), likeCard);
- }) }), dislikeCard);
+router.delete('/:cardId/likes', celebrate({ params: Joi.object().keys({ cardId: Joi.string().length(24).required().regex(/[A-Fa-f0-9]*/) }) }), dislikeCard);
 
 module.exports = router;
