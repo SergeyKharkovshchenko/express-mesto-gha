@@ -1,6 +1,5 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-const { UnauthorizedError } = require('./errors');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
@@ -13,13 +12,11 @@ function decode(token) {
 function checkToken(res, token, next) {
   try {
     if (!token) {
-      throw new UnauthorizedError('Пользователь не авторизован');
-      // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     return JWT.verify(token, tokenKey);
   } catch (err) {
     return next(err);
-    // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
   }
 }
 
