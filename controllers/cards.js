@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 const { BadRequestError, ItemNotFoundError } = require('../middlewares/errors');
-const { decode } = require('../middlewares/auth');
+// const { decode } = require('../middlewares/auth');
 
 const getAllCards = async (req, res, next) => {
   try {
@@ -64,27 +64,23 @@ const dislikeCard = async (req, res, next) => {
 };
 
 const deletCardById = async (req, res, next) => {
-  // const token = req.headers.authorization || req.cookies.jwt;
-  // if (token) {
-    try {
-      // const { _id } = decode(token);
-      const cardCheck = await Card.findById(req.params.cardId);
-      if (!cardCheck) {
-        throw new ItemNotFoundError('Card not found');
-      }
-      // eslint-disable-next-line eqeqeq
-      if (cardCheck.owner != req.user._id) {
-        return res.status(403).json({ message: 'Только владелец может удалить карточку' });
-      }
-      const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
-      return res.json(card);
-    } catch (err) {
-      if (err.name === 'CastError') {
-        return next(new BadRequestError('Указан некорректный id'));
-      }
-      return next(err);
+  try {
+    const cardCheck = await Card.findById(req.params.cardId);
+    if (!cardCheck) {
+      throw new ItemNotFoundError('Card not found');
     }
-  // }
+    // eslint-disable-next-line eqeqeq
+    if (cardCheck.owner.toString !== req.user._id.toString) {
+      return res.status(401).json({ message: 'Только владелец может удалить карточку' });
+    }
+    const card = await Card.findByIdAndRemove(req.params.cardId, { runValidators: true });
+    return res.json(card);
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new BadRequestError('Указан некорректный id'));
+    }
+    return next(err);
+  }
 };
 
 module.exports = {
