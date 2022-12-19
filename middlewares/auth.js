@@ -1,5 +1,4 @@
 const tokenKey = 'my_secret_token_key';
-// const e = require('express');
 const JWT = require('jsonwebtoken');
 const { UnauthorizedError } = require('./errors');
 
@@ -24,8 +23,6 @@ function checkAuth(req, res, next) {
     const token = req.headers.authorization || req.cookies.jwt;
     if (!token) {
       throw new UnauthorizedError('Неверный пользователь или пароль');
-      // throw new UnauthorizedError('User not found !');
-      // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const checkResult = checkToken(res, token);
     if (checkResult) {
