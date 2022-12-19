@@ -1,6 +1,6 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-const { UnauthorizedError } = require('./errors');
+// const { UnauthorizedError } = require('./errors');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
@@ -12,38 +12,25 @@ function decode(token) {
 
 function checkToken(res, token, next) {
   try {
-    // if (!token) {
-    //   // next(new UnauthorizedError('User not found'));
-    //   // return;
-    //   throw new UnauthorizedError('User not found');
-    //   // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
-    // }
-    // eslint-disable-next-line consistent-return
     return JWT.verify(token, tokenKey);
   } catch (err) {
-    // eslint-disable-next-line consistent-return
     return next(err);
   }
 }
 
-// eslint-disable-next-line consistent-return
 function checkAuth(req, res, next) {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
-    // if (!token) {
-    //   // throw new UnauthorizedError('User not found');
-    //   return new UnauthorizedError('User not found');
-    // }
     if (!token) {
-      throw new UnauthorizedError('User not found');
-      // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      // throw new UnauthorizedError('User not found');
+      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const checkResult = checkToken(res, token);
     if (checkResult) {
       const payload = decode(token);
       req.user = payload;
-      return next();
     }
+    return next();
   } catch (err) {
     return next(err);
   }

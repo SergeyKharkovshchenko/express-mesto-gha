@@ -33,32 +33,11 @@ app.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
+app.use('/users', checkAuth, routerUsers);
+app.use('/cards', checkAuth, routerCards);
 app.use(errors());
-app.use(
-  '/users',
-  (err, req, res, next) => {
-    try {
-      checkAuth(req, res, next);
-    } catch (e) {
-      next(e);
-    }
-  },
-  routerUsers,
-);
-app.use(
-  '/cards',
-  (err, req, res, next) => {
-    try {
-      checkAuth(req, res, next);
-    } catch (e) {
-      next(e);
-    }
-  },
-  routerCards,
-);
 app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
 app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
   res.status(statusCode);
   res.json({
@@ -70,16 +49,10 @@ app.use((err, req, res, next) => {
   next();
 });
 
-// app.use('*', (req, res, next) => {
-//   res.status(404).json({ message: 'Неизвестная науке ошибка' });
-//   next();
-// });
-
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
 }, () => {
   app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
     console.log(`App works, port ${PORT}`);
   });
 });
