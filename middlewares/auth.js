@@ -1,6 +1,6 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-const UnauthorizedError = require('./unauthorizederror');
+const { UnauthorizedError } = require('./errors');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
