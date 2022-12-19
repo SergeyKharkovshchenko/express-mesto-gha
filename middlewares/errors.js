@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import BadRequestError from './BadRequestError';
 import Error2 from './Error2';
 // const UnauthorizedError = require('./UnauthorizedError');
