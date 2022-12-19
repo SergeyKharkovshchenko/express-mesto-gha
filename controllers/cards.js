@@ -72,8 +72,8 @@ const deleteCardById = async (req, res, next) => {
       const card = await Card.findByIdAndRemove(req.params.cardId);
       return res.json(card);
     }
-    return new AccessDeniedError('Только владелец может удалить карточку');
-    // return res.status(403).json({ message: '' });
+    // return new AccessDeniedError('Только владелец может удалить карточку');
+    return res.status(403).json({ message: 'Только владелец может удалить карточку' });
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Указан некорректный id'));
