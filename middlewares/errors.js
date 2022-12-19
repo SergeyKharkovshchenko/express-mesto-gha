@@ -4,13 +4,13 @@ import Error2 from './Error2';
 // const UnauthorizedError = require('./UnauthorizedError');
 import ServerError from './ServerError';
 
-class UnauthorizedError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'UnauthorizedError';
-    this.statusCode = 401;
-  }
-}
+// class UnauthorizedError extends Error {
+//   constructor(message) {
+//     super(message);
+//     this.name = 'UnauthorizedError';
+//     this.statusCode = 401;
+//   }
+// }
 
 class ItemNotFoundError extends Error {
   constructor(message) {
@@ -24,6 +24,6 @@ export default {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
-  UnauthorizedError,
+  // UnauthorizedError,
   Error2,
 };
