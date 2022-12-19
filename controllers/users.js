@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { BadRequestError, ItemNotFoundError, UnauthorizedError } = require('../middlewares/errors').default;
+const { BadRequestError, ItemNotFoundError, Error2 } = require('../middlewares/errors').default;
 const { generateToken } = require('../middlewares/auth');
 
 const getAllUsers = async (req, res, next) => {
@@ -102,12 +102,10 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new UnauthorizedError('User not found !!!');
+      // throw new UnauthorizedError('User not found !!!');
+      throw new Error2('User not found !!!');
+      //   return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
-    // if (!user) {
-    //   // throw
-    //   return res.status(401).json({ message: 'Неверный пользователь или пароль' });
-    // }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(403).json({ message: 'Неверный пользователь или пароль' });

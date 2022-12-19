@@ -1,5 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import BadRequestError from './BadRequestError';
+import Error2 from './Error2';
 // const UnauthorizedError = require('./UnauthorizedError');
 import ServerError from './ServerError';
 
@@ -24,4 +25,5 @@ export default {
   ItemNotFoundError,
   ServerError,
   UnauthorizedError,
+  Error2,
 };
