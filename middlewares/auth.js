@@ -22,7 +22,7 @@ function checkAuth(req, res, next) {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
     if (!token) {
-      throw new UnauthorizedError('Неверный пользователь или пароль');
+      throw new UnauthorizedError('Неавторизованный пользователь');
     }
     const checkResult = checkToken(res, token);
     if (checkResult) {
