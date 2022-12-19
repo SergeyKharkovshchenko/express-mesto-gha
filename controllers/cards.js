@@ -1,6 +1,5 @@
 const Card = require('../models/card');
-const BadRequestError = require('../middlewares/BadRequestError').default;
-const ItemNotFoundError = require('../middlewares/ItemNotFoundError');
+const { ItemNotFoundError, BadRequestError } = require('../middlewares/errors');
 
 const getAllCards = async (req, res, next) => {
   try {
@@ -51,8 +50,7 @@ const dislikeCard = async (req, res, next) => {
       { new: true },
     );
     if (!card) {
-      return next(new ItemNotFoundError('Card not found'));
-      // throw new ItemNotFoundError('Card not found');
+      throw new ItemNotFoundError('Card not found');
     }
     return res.json(card);
   } catch (err) {

@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const { ItemNotFoundError, BadRequestError } = require('../middlewares/errors');
+const { ItemNotFoundError, BadRequestError, UnauthorizedError } = require('../middlewares/errors');
 const { generateToken } = require('../middlewares/auth');
 
 const getAllUsers = async (req, res, next) => {
@@ -16,7 +16,8 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      return res.status(403).json({ message: '!! Неверный пользователь или пароль' });
+      // return res.status(404).json({ message: 'User not found' });
+      throw new UnauthorizedError('Юзера с таким айди не существует');
       // throw new ItemNotFoundError('User not found');
     }
     return res.json(user);
@@ -103,16 +104,11 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      // throw new UnauthorizedError('User not found !!!');
-      // throw new Error2('User not found !!!');
-      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      throw new UnauthorizedError('Неверный пользователь или пароль');
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      throw (new ItemNotFoundError('Неверный пользователь или пароль'));
-      // eslint-disable-next-line consistent-return
-      // return;
-      // return res.status(403).json({ message: 'Неверный пользователь или пароль' });
+      throw new ItemNotFoundError('Неверный пользователь или пароль');
     }
     const payload = { _id: user._id };
     const token = generateToken(payload);

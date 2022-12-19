@@ -1,20 +1,25 @@
-// import Error2 from './Error2';
-// import UnauthorizedError from './UnauthorizedError';
-// import ServerError from './ServerError';
-// import BadRequestError from './BadRequestError';
-// import ItemNotFoundError from './ItemNotFoundError';
-const BadRequestError = require('./BadRequestError');
-const ServerError = require('./ServerError');
-const UnauthorizedError = require('./UnauthorizedError');
-// const ItemNotFoundError = require('../middlewares/errors').default;
+// eslint-disable-next-line max-classes-per-file
+class BadRequestError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 400;
+  }
+}
 
-// class UnauthorizedError extends Error {
-//   constructor(message) {
-//     super(message);
-//     this.name = 'UnauthorizedError';
-//     this.statusCode = 401;
-//   }
-// }
+class ServerError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 500;
+  }
+}
+
+class UnauthorizedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'UnauthorizedError';
+    this.statusCode = 401;
+  }
+}
 
 class ItemNotFoundError extends Error {
   constructor(message) {
@@ -24,8 +29,7 @@ class ItemNotFoundError extends Error {
   }
 }
 
-exports.default = {
-// module.exports = {
+module.exports = {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
