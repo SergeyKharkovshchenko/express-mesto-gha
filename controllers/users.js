@@ -102,7 +102,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      throw new UnauthorizedError ('User not found !!!');
+      throw new UnauthorizedError('User not found !!!');
     }
     // if (!user) {
     //   // throw
