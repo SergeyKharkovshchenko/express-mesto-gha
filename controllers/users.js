@@ -102,9 +102,12 @@ const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).select('+password');
     if (!user) {
-      // throw
-      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      throw new ItemNotFoundError('User not found !!!');
     }
+    // if (!user) {
+    //   // throw
+    //   return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+    // }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(403).json({ message: 'Неверный пользователь или пароль' });
