@@ -5,6 +5,7 @@ class BadRequestError extends Error {
   }
 }
 
-module.exports = {
+exports.default = {
+// module.exports = {
   BadRequestError,
 };

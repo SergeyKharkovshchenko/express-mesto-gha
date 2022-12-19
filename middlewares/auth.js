@@ -1,6 +1,6 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-const Error2 = require('./errors');
+const UnauthorizedError = require('./UnauthorizedError');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
@@ -22,7 +22,7 @@ function checkAuth(req, res, next) {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
     if (!token) {
-      throw new Error2('User not found !');
+      throw new UnauthorizedError('User not found !');
       // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const checkResult = checkToken(res, token);

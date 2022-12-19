@@ -1,7 +1,6 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
-const BadRequestError = require('../middlewares/errors').default;
-const ItemNotFoundError = require('../middlewares/errors').default;
+const { ItemNotFoundError, BadRequestError } = require('../middlewares/errors');
 const { generateToken } = require('../middlewares/auth');
 
 const getAllUsers = async (req, res, next) => {
@@ -17,7 +16,8 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) {
-      throw new ItemNotFoundError('User not found');
+      return res.status(403).json({ message: '!! Неверный пользователь или пароль' });
+      // throw new ItemNotFoundError('User not found');
     }
     return res.json(user);
   } catch (err) {
@@ -109,7 +109,10 @@ const login = async (req, res, next) => {
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(403).json({ message: 'Неверный пользователь или пароль' });
+      throw (new ItemNotFoundError('Неверный пользователь или пароль'));
+      // eslint-disable-next-line consistent-return
+      // return;
+      // return res.status(403).json({ message: 'Неверный пользователь или пароль' });
     }
     const payload = { _id: user._id };
     const token = generateToken(payload);

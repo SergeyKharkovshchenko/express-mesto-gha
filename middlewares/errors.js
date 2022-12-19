@@ -3,9 +3,9 @@
 // import ServerError from './ServerError';
 // import BadRequestError from './BadRequestError';
 // import ItemNotFoundError from './ItemNotFoundError';
-const BadRequestError = require('./BadRequestError').default;
-const ServerError = require('./ServerError').default;
-const UnauthorizedError = require('./UnauthorizedError').default;
+const BadRequestError = require('./BadRequestError');
+const ServerError = require('./ServerError');
+const UnauthorizedError = require('./UnauthorizedError');
 // const ItemNotFoundError = require('../middlewares/errors').default;
 
 // class UnauthorizedError extends Error {
@@ -24,7 +24,8 @@ class ItemNotFoundError extends Error {
   }
 }
 
-module.exports = {
+exports.default = {
+// module.exports = {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
