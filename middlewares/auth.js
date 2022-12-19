@@ -30,10 +30,10 @@ function checkToken(res, token, next) {
 function checkAuth(req, res, next) {
   try {
     const token = req.headers.authorization || req.cookies.jwt;
-    if (!token) {
-      // throw new UnauthorizedError('User not found');
-      return new UnauthorizedError('User not found');
-    }
+    // if (!token) {
+    //   // throw new UnauthorizedError('User not found');
+    //   return new UnauthorizedError('User not found');
+    // }
     if (!token) {
       // throw new UnauthorizedError('User not found');
       return res.status(401).json({ message: 'Неверный пользователь или пароль' });
