@@ -1,7 +1,6 @@
 const tokenKey = 'my_secret_token_key';
 const JWT = require('jsonwebtoken');
-// eslint-disable-next-line import/no-unresolved
-const UnauthorizedError = require('./UnauthorizedError');
+const UnauthorizedError = require('./unauthorizederror');
 
 function generateToken(payload) {
   return JWT.sign(payload, tokenKey, { expiresIn: '7d' });
@@ -23,6 +22,7 @@ function checkToken(res, token, next) {
   }
 }
 
+// eslint-disable-next-line consistent-return
 function checkAuth(req, res, next) {
   const token = req.headers.authorization || req.cookies.jwt;
   const checkResult = checkToken(res, token);
@@ -31,7 +31,8 @@ function checkAuth(req, res, next) {
   if (checkResult) {
     return next();
   }
-  return res.status(401).json({ message: 'Доступ запрещен' });
+  // return res.status(401).json({ message: 'Доступ запрещен' });
+  next(new UnauthorizedError('User not found'));
 }
 
 module.exports = {
