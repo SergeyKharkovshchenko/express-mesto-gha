@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { ItemNotFoundError, BadRequestError } = require('../middlewares/errors');
+const { ItemNotFoundError, BadRequestError, AccessDeniedError } = require('../middlewares/errors');
 
 const getAllCards = async (req, res, next) => {
   try {
@@ -72,7 +72,8 @@ const deleteCardById = async (req, res, next) => {
       const card = await Card.findByIdAndRemove(req.params.cardId);
       return res.json(card);
     }
-    return res.status(403).json({ message: 'Только владелец может удалить карточку' });
+    return new AccessDeniedError('Только владелец может удалить карточку');
+    // return res.status(403).json({ message: '' });
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Указан некорректный id'));

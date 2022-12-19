@@ -29,9 +29,18 @@ class ItemNotFoundError extends Error {
   }
 }
 
+class AccessDeniedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AccessDeniedError';
+    this.statusCode = 403;
+  }
+}
+
 module.exports = {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
   UnauthorizedError,
+  AccessDeniedError,
 };
