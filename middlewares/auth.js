@@ -12,12 +12,12 @@ function decode(token) {
 
 function checkToken(res, token, next) {
   try {
-    if (!token) {
-      // next(new UnauthorizedError('User not found'));
-      // return;
-      // throw new UnauthorizedError('User not found');
-      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
-    }
+    // if (!token) {
+    //   // next(new UnauthorizedError('User not found'));
+    //   // return;
+    //   throw new UnauthorizedError('User not found');
+    //   // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+    // }
     // eslint-disable-next-line consistent-return
     return JWT.verify(token, tokenKey);
   } catch (err) {
@@ -28,15 +28,20 @@ function checkToken(res, token, next) {
 
 // eslint-disable-next-line consistent-return
 function checkAuth(req, res, next) {
-  const token = req.headers.authorization || req.cookies.jwt;
-  const checkResult = checkToken(res, token);
-  const payload = decode(token);
-  req.user = payload;
-  if (checkResult) {
-    return next();
+  try {
+    const token = req.headers.authorization || req.cookies.jwt;
+    if (!token) {
+      throw new UnauthorizedError('User not found');
+    }
+    const checkResult = checkToken(res, token);
+    if (checkResult) {
+      const payload = decode(token);
+      req.user = payload;
+      return next();
+    }
+  } catch (err) {
+    return next(err);
   }
-  // return res.status(401).json({ message: 'Доступ запрещен' });
-  next(new UnauthorizedError('User not found'));
 }
 
 module.exports = {
