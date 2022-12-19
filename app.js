@@ -33,29 +33,29 @@ app.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
+app.use(errors());
 app.use(
   '/users',
-  (req, res, next) => {
+  (err, req, res, next) => {
     try {
       checkAuth(req, res, next);
-    } catch (err) {
-      next(err);
+    } catch (e) {
+      next(e);
     }
   },
   routerUsers,
 );
 app.use(
   '/cards',
-  (req, res, next) => {
+  (err, req, res, next) => {
     try {
       checkAuth(req, res, next);
-    } catch (err) {
-      next(err);
+    } catch (e) {
+      next(e);
     }
   },
   routerCards,
 );
-// app.use(errors());
 app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
