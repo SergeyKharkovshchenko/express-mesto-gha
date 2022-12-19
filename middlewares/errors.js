@@ -39,7 +39,7 @@ class AccessDeniedError extends Error {
   }
 }
 
-export default {
+module.exports = {
   BadRequestError,
   ItemNotFoundError,
   ServerError,
