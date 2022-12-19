@@ -1,5 +1,5 @@
 const Card = require('../models/card');
-const { ItemNotFoundError, BadRequestError, AccessDeniedError } = require('../middlewares/errors');
+const { ItemNotFoundError, BadRequestError, AccessDeniedError } = require('../middlewares/errors').default;
 
 const getAllCards = async (req, res, next) => {
   try {
