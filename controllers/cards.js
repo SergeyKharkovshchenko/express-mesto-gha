@@ -68,13 +68,11 @@ const deleteCardById = async (req, res, next) => {
       throw new ItemNotFoundError('Card not found');
     }
     // eslint-disable-next-line eqeqeq
-    if (cardCheck.owner == req.user._id) {
-      const card = await Card.findByIdAndRemove(req.params.cardId);
-      return res.json(card);
+    if (cardCheck.owner != req.user._id) {
+      throw new AccessDeniedError('Только владелец может удалить карточку');
     }
-    throw new AccessDeniedError('Только владелец может удалить карточку');
-    // return new AccessDeniedError('Только владелец может удалить карточку');
-    // return res.status(403).json({ message: 'Только владелец может удалить карточку' });
+    const card = await Card.findByIdAndRemove(req.params.cardId);
+    return res.json(card);
   } catch (err) {
     if (err.name === 'CastError') {
       return next(new BadRequestError('Указан некорректный id'));
