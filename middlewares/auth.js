@@ -35,8 +35,8 @@ function checkAuth(req, res, next) {
     //   return new UnauthorizedError('User not found');
     // }
     if (!token) {
-      // throw new UnauthorizedError('User not found');
-      return res.status(401).json({ message: 'Неверный пользователь или пароль' });
+      throw new UnauthorizedError('User not found');
+      // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
     const checkResult = checkToken(res, token);
     if (checkResult) {
