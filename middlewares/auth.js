@@ -13,11 +13,15 @@ function decode(token) {
 function checkToken(res, token, next) {
   try {
     if (!token) {
-      throw new UnauthorizedError('User not found');
+      next(new UnauthorizedError('User not found'));
+      return;
+      // throw new UnauthorizedError('User not found');
       // return res.status(401).json({ message: 'Неверный пользователь или пароль' });
     }
+    // eslint-disable-next-line consistent-return
     return JWT.verify(token, tokenKey);
   } catch (err) {
+    // eslint-disable-next-line consistent-return
     return next(err);
   }
 }
