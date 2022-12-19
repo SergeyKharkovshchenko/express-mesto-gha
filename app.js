@@ -33,8 +33,28 @@ app.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
-app.use('/users', checkAuth, routerUsers);
-app.use('/cards', checkAuth, routerCards);
+app.use(
+  '/users',
+  (req, res, next) => {
+    try {
+      checkAuth(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  },
+  routerUsers,
+);
+app.use(
+  '/cards',
+  (req, res, next) => {
+    try {
+      checkAuth(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  },
+  routerCards,
+);
 app.use(errors());
 app.use('*', (req, res, next) => next(new ItemNotFoundError('Неверный запрос')));
 app.use((err, req, res, next) => {
