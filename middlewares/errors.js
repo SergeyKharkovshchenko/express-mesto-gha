@@ -1,9 +1,9 @@
 // import Error2 from './Error2';
-const { Error2 } = require('./Error2');
+const Error2 = require('./Error2');
 // const UnauthorizedError = require('./UnauthorizedError');
 // import ServerError from './ServerError';
-const { ServerError } = require('./ServerError');
-const { BadRequestError } = require('./BadRequestError');
+const ServerError = require('./ServerError');
+const BadRequestError = require('./BadRequestError');
 
 // class UnauthorizedError extends Error {
 //   constructor(message) {
