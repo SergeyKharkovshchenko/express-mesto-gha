@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors } = require('celebrate');
-const { ItemNotFoundError } = require('./middlewares/errors');
+const { ItemNotFoundError } = require('./middlewares/errors').default;
 
 const { PORT = 3000 } = process.env;
 const routerCards = require('./routes/cards');

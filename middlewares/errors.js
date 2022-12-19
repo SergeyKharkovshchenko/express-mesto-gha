@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file, import/no-unresolved, import/extensions
-const { BadRequestError } = require('./badReqError.js');
+const { BadRequestError } = require('./badReqError');
 
 // class BadRequestError extends Error {
 //   constructor(message) {
