@@ -68,7 +68,7 @@ const updateProfile = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(req.user._id, req.body, {
       new: true,
-      runValidators: true,
+      // runValidators: true,
     });
     if (!user) {
       throw new ItemNotFoundError('User not found');
