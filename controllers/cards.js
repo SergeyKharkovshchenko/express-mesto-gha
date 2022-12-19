@@ -63,7 +63,7 @@ const dislikeCard = async (req, res, next) => {
   }
 };
 
-const deletCardById = async (req, res, next) => {
+const deleteCardById = async (req, res, next) => {
   try {
     const cardCheck = await Card.findById(req.params.cardId);
     if (!cardCheck) {
@@ -88,5 +88,5 @@ module.exports = {
   createCard,
   likeCard,
   dislikeCard,
-  deletCardById,
+  deleteCardById,
 };
