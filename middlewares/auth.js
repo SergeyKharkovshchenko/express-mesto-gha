@@ -25,10 +25,11 @@ function checkAuth(req, res, next) {
       throw new UnauthorizedError('Неавторизованный пользователь');
     }
     const checkResult = checkToken(res, token);
-    if (checkResult) {
-      const payload = decode(token);
-      req.user = payload;
+    if (!checkResult) {
+      throw new UnauthorizedError('Неавторизованный пользователь');
     }
+    const payload = decode(token);
+    req.user = payload;
     return next();
   } catch (err) {
     return next(err);

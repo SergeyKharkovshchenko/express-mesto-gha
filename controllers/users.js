@@ -55,7 +55,7 @@ const createUser = async (req, res, next) => {
     });
   } catch (err) {
     if (err.name === 'ValidationError') {
-      next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
+      return next(new BadRequestError(`${Object.values(err.errors).map((error) => error.message).join(', ')}`));
     }
     if (err.code === 11000) {
       return res.status(409).json({ message: 'Вы пытаетесь зарегистрироваться по уже существующему в базе email' });
@@ -106,7 +106,7 @@ const login = async (req, res, next) => {
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      throw new ItemNotFoundError('Неверный пользователь или пароль');
+      throw new UnauthorizedError('Неверный пользователь или пароль');
     }
     const payload = { _id: user._id };
     const token = generateToken(payload);
