@@ -14,7 +14,7 @@ function checkToken(res, token, next) {
   try {
     return JWT.verify(token, tokenKey);
   } catch (err) {
-    return next(err);
+    return next(new UnauthorizedError('Неавторизованный пользователь'));
   }
 }
 
@@ -25,11 +25,10 @@ function checkAuth(req, res, next) {
       throw new UnauthorizedError('Неавторизованный пользователь');
     }
     const checkResult = checkToken(res, token);
-    if (!checkResult) {
-      throw new UnauthorizedError('Неавторизованный пользователь');
+    if (checkResult) {
+      const payload = decode(token);
+      req.user = payload;
     }
-    const payload = decode(token);
-    req.user = payload;
     return next();
   } catch (err) {
     return next(err);
